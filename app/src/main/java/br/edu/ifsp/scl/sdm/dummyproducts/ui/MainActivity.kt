@@ -78,20 +78,16 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun retrieveProducts() =
-        StringRequest(Request.Method.GET, PRODUCTS_ENDPOINT, { response ->
-            Gson().fromJson(response, ProductList::class.java).products.also {
-                productAdapter.addAll(it)
-            }
-        }, {
-            Toast.makeText(
-                this, getString(R.string.message_request_problem), Toast.LENGTH_SHORT
-            ).show()
-        }).also { DummyJSONAPI.getInstance(this).addToRequestQueue(it) }
+    private fun retrieveProducts() = DummyJSONAPI.ProductListRequest({ productList ->
+        productList.products.also {
 
-
-    companion object {
-        const val PRODUCTS_ENDPOINT = "https://dummyjson.com/products/"
-        const val PHOTOS_ENDPOINT = "https://jsonplaceholder.typicode.com/photos"
+            productAdapter.addAll(it)
+        }
+    }, {
+        Toast.makeText(
+            this, getString(R.string.message_request_problem), Toast.LENGTH_SHORT
+        ).show()
+    }).also {
+        DummyJSONAPI.getInstance(this).addToRequestQueue(it)
     }
 }
